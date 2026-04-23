@@ -2,36 +2,50 @@ name: Playwright Tests with Recording
 
 on:
   workflow_dispatch:
-
 jobs:
   test:
-    runs-on: windows-latest
-
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: 10.0.x
 
-      - name: Setup Node (for playwright browsers installer)
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Setup Node (for Playwright)
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-
-      - name: Restore and build
-        run: dotnet restore && dotnet build --configuration Release
+          node-version: lts/*
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
-        shell: bash
+
+      - name: Install additional dependencies for headless browsers
+        run: sudo apt-get update && sudo apt-get install -y xvfb
 
       - name: Run tests
-        run: dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
+        run: xvfb-run --auto-servernum dotnet test --logger "trx;LogFileName=tests.trx"
+        env:
+          CI: true
+          PLAYWRIGHT_HEADLESS: true
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 10
 
       - name: Upload recordings artifact
         uses: actions/upload-artifact@v4
         with:
           name: test-recordings
           path: recordings/
+          retention-days: 10
