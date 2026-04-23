@@ -35,6 +35,13 @@ jobs:
           CI: true
           PLAYWRIGHT_HEADLESS: true
 
+      - name: Upload recordings artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-recordings
+          path: recordings/
+          retention-days: 10
+
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: ${{ always() }}
@@ -42,10 +49,4 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 10
-
-      - name: Upload recordings artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-recordings
-          path: recordings/
-          retention-days: 10
+  
