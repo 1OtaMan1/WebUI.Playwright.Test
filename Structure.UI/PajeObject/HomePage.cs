@@ -7,7 +7,7 @@ namespace Structure.UI.PajeObject
         private readonly IPage _page = page;
 
         // Use a resilient selector that matches links/buttons that navigate to signup
-        private ILocator SubmitButton => _page.Locator("a[href^='/signup'])");
+        private ILocator SubmitButton => _page.Locator("a[href^='/signup']");
 
         public async Task ClickSubmitButtonAsync()
         {

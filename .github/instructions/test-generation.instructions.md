@@ -21,7 +21,7 @@ When I provide a Jira test case, it will include:
 - **Steps**: Numbered test steps
 - **Expected Results**: What each step should verify
 - **Test Categories**: Regression, Nightly, Acceptance, Prod, Smoke (if specified)
-- **Hardcoded Values**: Exact values for entities (e.g., Contract Tier "11111", dates "03/01/2021") ï¿½ these must be converted to dynamic values (see Hardcoded Value Conversion Rules below)
+- **Hardcoded Values**: Exact values for entities (e.g., Contract Tier "11111", dates "03/01/2021") — these must be converted to dynamic values (see Hardcoded Value Conversion Rules below)
 - **HTML of the page** (optional): Raw HTML of the UI page under test
 
 ---
@@ -40,7 +40,7 @@ When I provide a Jira test case, it will include:
 
 ### Target Framework
 
-- .NET 10, C# 12.0
+- .NET 8, C# 12.0
 - NUnit 3 with Atata framework
 - Allure for reporting
 
@@ -409,17 +409,17 @@ When a detail page has tabs, create a base page class that contains the tab navi
 
 When reading HTML to build page objects, use these selectors in this priority:
 
-1. `data-test-automation-id` ï¿½ preferred, most stable. Use: `[FindByXPath("*[@data-test-automation-id='value']")]`
-2. `data-bind="text: PropertyName"` ï¿½ for grid cell text fields. Use: `[FindByXPath("*[contains(@data-bind, 'text: PropertyName')]")]`
-3. `data-bind="gridDate: PropertyName"` ï¿½ for date fields in grids. Use: `[FindByXPath("*[contains(@data-bind, 'gridDate: PropertyName')]")]`
-4. `data-bind="colorfulStatusV3: ..."` ï¿½ for status fields. Use: `[FindByXPath("*[contains(@data-bind, 'colorfulStatusV3')]")]`
-5. `id` attribute ï¿½ for specific containers. Use: `[ControlDefinition("div[@id='contracts-list']")]`
-6. `envi-button params` containing a resource key ï¿½ for buttons. Use: `[FindByXPath("//envi-button[contains(@params,'txtAddContract')]//a")]`
-7. CSS class ï¿½ last resort. Use: `[FindByCss(".some-class")]` or `[FindByClass("some-class")]`
+1. `data-test-automation-id` — preferred, most stable. Use: `[FindByXPath("*[@data-test-automation-id='value']")]`
+2. `data-bind="text: PropertyName"` — for grid cell text fields. Use: `[FindByXPath("*[contains(@data-bind, 'text: PropertyName')]")]`
+3. `data-bind="gridDate: PropertyName"` — for date fields in grids. Use: `[FindByXPath("*[contains(@data-bind, 'gridDate: PropertyName')]")]`
+4. `data-bind="colorfulStatusV3: ..."` — for status fields. Use: `[FindByXPath("*[contains(@data-bind, 'colorfulStatusV3')]")]`
+5. `id` attribute — for specific containers. Use: `[ControlDefinition("div[@id='contracts-list']")]`
+6. `envi-button params` containing a resource key — for buttons. Use: `[FindByXPath("//envi-button[contains(@params,'txtAddContract')]//a")]`
+7. CSS class — last resort. Use: `[FindByCss(".some-class")]` or `[FindByClass("some-class")]`
 
 ### Page Object Rules
 
-- All properties use `{ get; private set; }` ï¿½ never `{ get; set; }`
+- All properties use `{ get; private set; }` — never `{ get; set; }`
 - Every page object file must have `using _ = PageClassName;` alias at the top
 - List pages inherit from `MainPage<_>`
 - Detail pages may inherit from a base page (e.g., `ContractBasePage<_>`) that provides tab navigation
@@ -522,19 +522,19 @@ To set a value on a dropdown or select control, use the Set method with the disp
 
 ## WHAT NOT TO DO
 
-- Do NOT create page objects without HTML or existing examples ï¿½ ASK for HTML first
-- Do NOT hardcode GUIDs ï¿½ always resolve via API using `GetList()`, `GetItems()`, etc.
-- Do NOT hardcode entity values from Jira test cases ï¿½ always convert them to dynamic generated values (see Hardcoded Value Conversion Rules)
-- Do NOT skip cleanup ï¿½ always use `TestActions.Add(() => ...)`
-- Do NOT use `Thread.Sleep` ï¿½ use `.Wait(Until.Visible)` or `.WaitSeconds()`
+- Do NOT create page objects without HTML or existing examples — ASK for HTML first
+- Do NOT hardcode GUIDs — always resolve via API using `GetList()`, `GetItems()`, etc.
+- Do NOT hardcode entity values from Jira test cases — always convert them to dynamic generated values (see Hardcoded Value Conversion Rules)
+- Do NOT skip cleanup — always use `TestActions.Add(() => ...)`
+- Do NOT use `Thread.Sleep` — use `.Wait(Until.Visible)` or `.WaitSeconds()`
 - Do NOT compare strings lexicographically when numeric comparison is needed
 - Do NOT fetch sequence numbers AFTER creating data (this causes race conditions)
 - Do NOT add test categories (Nightly, Acceptance, Prod, Smoke) unless explicitly specified in the Jira test case. Remember: Jira label `AT_Tests` maps to `Category(Acceptance)`
-- Do NOT use `{ get; set; }` in page objects ï¿½ always use `{ get; private set; }`
+- Do NOT use `{ get; set; }` in page objects — always use `{ get; private set; }`
 - Do NOT forget the `using _ = PageClassName;` alias in page object files
-- Do NOT use `Assert.IsTrue` or `Assert.AreEqual` ï¿½ always use constraint-based `Assert.That`
-- Do NOT create helper methods inline in tests ï¿½ put them as `private static` methods at the bottom of the test class
-- Do NOT guess which API service or page element to use ï¿½ ASK if unsure
+- Do NOT use `Assert.IsTrue` or `Assert.AreEqual` — always use constraint-based `Assert.That`
+- Do NOT create helper methods inline in tests — put them as `private static` methods at the bottom of the test class
+- Do NOT guess which API service or page element to use — ASK if unsure
 
 ---
 
@@ -598,11 +598,11 @@ Generated code:
 When a Jira MCP server (e.g., Atlassian MCP or similar) is available and the user provides only a Jira test case ID (e.g., "Generate test for ENVI-377275"), use the MCP tool to fetch the issue details from Jira before generating the test.
 
 Extract the following from the Jira issue:
-- **Test Case ID** ï¿½ from the issue key (e.g., ENVI-377275)
-- **Parent Story ID** ï¿½ from the parent or linked epic/story
-- **Title** ï¿½ from the Summary field
-- **Steps and Expected Results** ï¿½ from the Description field or Zephyr/Xray test steps
-- **Test Categories** ï¿½ look for labels or custom fields that mention Regression, Nightly, AT_Tests, Prod, Smoke. Map `AT_Tests` label to `Category(Acceptance)` in the generated test.
+- **Test Case ID** — from the issue key (e.g., ENVI-377275)
+- **Parent Story ID** — from the parent or linked epic/story
+- **Title** — from the Summary field
+- **Steps and Expected Results** — from the Description field or Zephyr/Xray test steps
+- **Test Categories** — look for labels or custom fields that mention Regression, Nightly, AT_Tests, Prod, Smoke. Map `AT_Tests` label to `Category(Acceptance)` in the generated test.
 
 Then apply all the same code generation rules from this document.
 
@@ -660,7 +660,7 @@ The codebase provides high-level Creator classes that chain multiple API calls. 
 
 For complex multi-step workflows (PO ? Receipt ? Invoice ? Match), look for existing examples in the test class closest to the feature being tested. If the Jira test case mentions a precondition like "Matched Invoice exists", ASK which test file to use as reference.
 
-### Common Setup Shortcuts (Creator Patterns) ï¿½ continued
+### Common Setup Shortcuts (Creator Patterns) — continued
 
 When a helper method creates multiple related entities, use a tuple return:
 
@@ -702,12 +702,12 @@ To set a value on a dropdown or select control, use the Set method with the disp
 
 When a test runs against the old UI design, call `SwitchDesignMode()` on the page AFTER navigation and BEFORE interacting with elements. For new-design tests (NDTest suffix), do NOT call `SwitchDesignMode()`.
 
-    // Old design test ï¿½ call SwitchDesignMode
+    // Old design test — call SwitchDesignMode
     var listPage = Go.To<ContractListPage>(url: WebUrls.ToContractsList);
     listPage.SwitchDesignMode();
     listPage.SomeElement.Wait(Until.Visible);
 
-    // New design test ï¿½ no SwitchDesignMode call
+    // New design test — no SwitchDesignMode call
     var listPage = LoginAndGo.To<ReceivingListPage>(WebUrls.ToReceivingList, SimpleUser);
     listPage.SwitchDesignMode();  // some ND tests still call this to toggle to NEW design
     listPage.SomeElement.Wait(Until.Visible);
