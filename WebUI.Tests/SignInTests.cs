@@ -12,19 +12,9 @@ namespace WebUI.Tests
         {
             // recordings directory (will be committed or uploaded by CI)
             var recordingsDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "recordings");
-            Directory.CreateDirectory(recordingsDir);
-
-            // create new context with video recording enabled
-            await using var context = await Browser.NewContextAsync(new BrowserNewContextOptions
-            {
-                RecordVideoDir = recordingsDir,
-                RecordVideoSize = new RecordVideoSize { Width = 1280, Height = 720 }
-            });
-
+            await using var context = await Browser.NewContextAsync(PlaywrightConfig.CreateContextOptions(recordingsDir));
             var page = await context.NewPageAsync();
-
-            // Open homepage
-            await page.GotoAsync("https://djinni.co/");
+            await page.GotoAsync(PlaywrightConfig.BaseUrl);
 
             // Use HomePage page object (pass the local page)
             var home = new HomePage(page);
